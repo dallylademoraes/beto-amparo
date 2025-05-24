@@ -10,7 +10,7 @@ const nextConfig = {
   async rewrites() {
     return [
       {
-        source: '/produto/:id', // URL personalizada
+        source: '/loja/produto/:site/:id', // URL personalizada
         destination: '/client/produto', // Arquivo de destino
       },
       {

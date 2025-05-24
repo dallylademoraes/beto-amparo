@@ -9,11 +9,12 @@ export default function ProdutoCard({
   onAumentar,
   onDiminuir,
   getImagemProduto,
+  slug
 }) {
   const [imageSrc, setImageSrc] = useState(getImagemProduto(produto.image));
 
   const handleCardClick = () => {
-    window.location.href = `/produto/${produto.id}`;
+    window.location.href = `produto/${slug}/${produto.id}`;
   };
 
   const handleAdicionarClick = (event) => {

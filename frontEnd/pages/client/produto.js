@@ -10,11 +10,55 @@ import { useRouter } from 'next/router';
 export default function Produto() {
   const router = useRouter();
   const { id } = router.query 
+  const { site } = router.query;
+
 
   const [produto, setProduto] = useState(null);
   const [adicionais, setAdicionais] = useState({});
   const [quantidade, setQuantidade] = useState(1);
   const [selecionados, setSelecionados] = useState({});
+  const [corPrimaria, setCorPrimaria] = useState("#3B82F6"); // Valor padrão
+
+  useEffect(() => {
+    
+    if (!site) return;
+  
+    async function fetchEmpresa() {
+      try {
+        const url = `${process.env.NEXT_PUBLIC_EMPRESA_API}/loja/slug/${site}`;
+        const response = await fetch(url);
+  
+        if (!response.ok) {
+          // Tenta obter corpo do erro
+          let errorMessage = `Erro HTTP ${response.status}: ${response.statusText}`;
+          try {
+            const errorData = await response.json();
+            if (errorData.message) {
+              errorMessage += ` - ${errorData.message}`;
+            }
+          } catch (jsonError) {
+            // Não conseguiu parsear o JSON do erro
+          }
+  
+          console.error("Erro na resposta da API:", errorMessage);
+          setNomeEmpresa("Erro ao carregar");
+          return;
+        }
+  
+        const data = await response.json();
+
+        
+        setCorPrimaria(data.cor_primaria || "#3B82F6"); // Atualiza com a cor da API
+      } catch (error) {
+        console.error("Erro na requisição ao buscar empresa:", error.message || error);
+       
+      }
+    }
+    fetchEmpresa()
+    
+    
+  }, [site]);
+  
 
   useEffect(() => { 
     if (!id) return;
@@ -57,16 +101,31 @@ export default function Produto() {
       0
     );
 
-  const handleAddToCart = () => {
-    axios
-      .post(`${process.env.NEXT_PUBLIC_EMPRESA_API}`, {
-        produto: produto.name,
-        quantidade,
-        adicionais: selecionados,
-        total: subtotal,
-      })
-      .then((res) => alert(res.data.message));
-  };
+
+    const handleAddToCart = async () => {
+      try {
+        console.log(quantidade, lojaId);
+        const response = await fetch(`${process.env.NEXT_PUBLIC_EMPRESA_API}/loja/${site}/carrinho`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            produtoId: produto.id,
+            quantidade,
+            lojaId: produto.loja_id ,
+          }),
+        });
+    
+        const data = await response.json();
+        console.log('Resposta do servidor:', data);
+        alert(data.message);
+      } catch (error) {
+        console.error('Erro ao adicionar ao carrinho:', error);
+        alert('Erro ao adicionar ao carrinho');
+      }
+    };
+    
 
   if (!produto) return <div className="p-4 text-center">Carregando...</div>;
 
@@ -101,7 +160,7 @@ export default function Produto() {
   
       {/* Navbar (sempre visível no final da tela) */}
       <div className="w-full max-w-5xl mt-6">
-        <NavBar />
+      <NavBar site={site} corPrimaria={corPrimaria} />
       </div>
     </div>
   );

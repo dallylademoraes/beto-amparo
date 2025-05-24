@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
 import Image from 'next/image';
-
+import FloatingNotificationsTop from '@/components/notification';
 export default function OwnerDashboard() {
   const router = useRouter();
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -12,6 +12,7 @@ export default function OwnerDashboard() {
   }, [router]);
 
   return (
+    
     <div className="min-h-screen flex flex-col md:flex-row">
       <div className="bg-[#3681B6] text-white flex items-center justify-between p-4 md:hidden">
         <div className="flex items-center gap-2">
@@ -57,6 +58,7 @@ export default function OwnerDashboard() {
       </aside>
 
       <main className="flex-1 bg-gray-100 p-6 md:p-8">
+      <FloatingNotificationsTop/>
         <h1 className="text-2xl font-bold text-gray-600 mb-6 text-center">Bem-vindo (a) de volta, Fulano!</h1>
         <div className="mt-4 w-full max-w-3xl mx-auto mb-6">
           <label className="block text-gray-800 text-sm mb-1 font-bold">Link da sua loja:</label>

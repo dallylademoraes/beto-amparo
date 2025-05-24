@@ -48,6 +48,7 @@ async function getLojaIdBySlug(req, res, next) {
 router.post('/:slug/carrinho', getLojaIdBySlug, async (req, res) => {
     const { produtoId, quantidade } = req.body;
     const lojaId = req.lojaId; // Obtemos o lojaId do objeto req, que foi adicionado pelo middleware
+   
 
     if (!produtoId || !quantidade || !lojaId) {
         return res.status(400).json({ erro: 'Produto ID, quantidade e ID da loja são obrigatórios.' });
