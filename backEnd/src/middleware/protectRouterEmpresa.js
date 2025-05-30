@@ -20,11 +20,11 @@ export const empresaPrivate = async (req, res, next) => {
       if (!empresa) {
         return res.status(401).json({ error: "Empresa não encontrada." });
       }
-  
-      req.Id = decoded.id;
+      
+      req.IdEmpresa = decoded.id;
       req.user = empresa;
       req.userTipo = decoded.tipo;
-  
+
       next();
     } catch (err) {
       return res.status(401).json({ error: "Token inválido ou expirado." });

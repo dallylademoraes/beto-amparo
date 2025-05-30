@@ -44,6 +44,7 @@ export async function middleware(req) {
     // 2. ROTAS PROTEGIDAS DA EMPRESA
     if (pathname.startsWith('/empresa')) {
         token = tokenEmpresaCookie;
+       
         
         if (!token) {
             const redirectUrl = new URL(loginEmpresaPath, req.url);

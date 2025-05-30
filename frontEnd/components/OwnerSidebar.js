@@ -3,6 +3,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { useState, useEffect } from 'react';
+import { Clock } from "lucide-react"
 
 // Helper component para os itens de navegação
 // Adiciona uma prop 'onClick' para lidar com ações como logout
@@ -109,6 +110,7 @@ export default function OwnerSidebar({ children, slug }) {
             <NavItem icon="/icons/add_white.svg" label="Meus Produtos" path="/produtos" currentSlug={slug} />
             <NavItem icon="/icons/paint_white.svg" label="Personalizar Loja" path="/personalizacao-loja" currentSlug={slug} />
             <NavItem icon="/icons/help_white.svg" label="Suporte" path="/suporte" currentSlug={slug} />
+            <NavItem icon="/icons/clock_white.svg"  label="Horarios" path="/empresa/horarioEmpresa"  />
           </div>
         </div>
         

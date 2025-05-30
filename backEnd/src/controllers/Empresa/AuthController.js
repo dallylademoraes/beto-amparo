@@ -9,7 +9,6 @@ import * as lojaModel from '#models/Loja.js'; // <-- USANDO ALIAS
 
 export const loginEmpresa = async (req, res) => {
     const { email, senha } = req.body;
-    console.log('req.body:', req.body);
 
     if (!email || !senha) {
         return res.status(400).json({ error: "Email e senha são obrigatórios" });
@@ -44,8 +43,8 @@ export const loginEmpresa = async (req, res) => {
 
         res.cookie("token_empresa", token, {
             httpOnly: false, // Alterei para false porque o frontend está lendo o cookie
-            secure: process.env.NODE_ENV === 'production' ? true : false,
-            sameSite: process.env.NODE_ENV === 'production' ? "none" : "Lax",
+            secure:  true,
+            sameSite:  "none" ,
             maxAge: 24 * 60 * 60 * 1000,
             path: "/",
         });
