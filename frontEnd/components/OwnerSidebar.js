@@ -36,6 +36,7 @@ function NavItem({ icon, label, path, currentSlug, onClick }) {
 }
 
 export default function OwnerSidebar({ children, slug }) {
+  console.log("OwnerSidebar -> slug recebido:", slug);
   const router = useRouter();
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
@@ -63,7 +64,7 @@ export default function OwnerSidebar({ children, slug }) {
     }
   };
 
-  const ownerAreaPath = '/empresa/donoarea';
+  const ownerAreaPath = `/empresa/${slug}/donoarea`;
 
   return (
     <div className="min-h-screen flex flex-col md:flex-row">
@@ -109,8 +110,8 @@ export default function OwnerSidebar({ children, slug }) {
             <NavItem icon="/icons/dashboard_white.svg" label="Dashboard" path="/dashboard" currentSlug={slug} />
             <NavItem icon="/icons/add_white.svg" label="Meus Produtos" path="/produtos" currentSlug={slug} />
             <NavItem icon="/icons/paint_white.svg" label="Personalizar Loja" path="/personalizacao" currentSlug={slug} />
-            <NavItem icon="/icons/help_white.svg" label="Suporte" path="/suporte" currentSlug={slug} />
             <NavItem icon="/icons/clock_white.svg"  label="Horarios" path="/empresa/horarioEmpresa"  />
+            <NavItem icon="/icons/help_white.svg" label="Suporte" path="/suporte" currentSlug={slug} />
           </div>
         </div>
         

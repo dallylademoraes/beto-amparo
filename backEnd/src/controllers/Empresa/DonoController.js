@@ -4,75 +4,44 @@ import jwt from 'jsonwebtoken';
 class DonoController {
   async getDonoData(req, res) {
     try {
-      const token = req.cookies?.token_empresa;
+      const { slug } = req.params;
 
-      if (!token) {
-        return res.status(401).json({ error: 'Token não fornecido no cookie' });
+      if (!slug) {
+        return res.status(400).json({ error: 'Slug não fornecido' });
       }
 
-      let decoded;
-      try {
-        decoded = jwt.verify(token, process.env.JWT_SECRET);
-      } catch (err) {
-        return res.status(401).json({ error: 'Token inválido ou expirado' });
-      }
-
-      const empresaId = decoded.id;
-
-      // Buscar dados da empresa
-      const { data: empresa, error: empresaError } = await supabase
-        .from('empresas')
-        .select('*')
-        .eq('id', empresaId)
-        .single();
-
-      if (empresaError) {
-        console.error('Erro ao buscar empresa:', empresaError.message);
-        return res.status(500).json({ error: 'Erro ao buscar dados da empresa' });
-      }
-
-      if (!empresa) {
-        return res.status(404).json({ error: 'Empresa não encontrada' });
-      }
-
-      // Buscar loja da empresa
       const { data: loja, error: lojaError } = await supabase
         .from('loja')
-        .select('*')
-        .eq('id_empresa', empresaId)
+        .select('*, empresas(*)')
+        .eq('slug_loja', slug)
         .single();
 
-      if (lojaError) {
-        console.error('Erro ao buscar loja:', lojaError.message);
-        return res.status(500).json({ error: 'Erro ao buscar dados da loja' });
-      }
-
-      if (!loja) {
+      if (lojaError || !loja) {
         return res.status(404).json({ error: 'Loja não encontrada' });
       }
 
-      // Buscar produtos da loja
+      const { empresas: empresa, ...lojaData } = loja;
+
       const { data: produtos, error: produtosError } = await supabase
         .from('produto')
         .select('*')
-        .eq('id_loja', loja.id);
+        .eq('id_loja', lojaData.id);
 
       if (produtosError) {
-        console.error('Erro ao buscar produtos:', produtosError.message);
         return res.status(500).json({ error: 'Erro ao buscar produtos' });
       }
 
       return res.status(200).json({
         empresa,
-        loja,
+        loja: lojaData,
         produtos: produtos ?? [],
       });
-
     } catch (error) {
       console.error('Erro inesperado:', error);
       return res.status(500).json({ error: 'Erro interno do servidor' });
     }
   }
+
 }
 
 export default new DonoController();

@@ -20,38 +20,43 @@ export default function OwnerDono() {
     });
 
     useEffect(() => {
+        if (!router.isReady) return;
+
+        const { slug } = router.query;
+
         async function fetchDonoArea() {
             try {
-                const res = await fetch(`${process.env.NEXT_PUBLIC_EMPRESA_API}/dono`, {
-                    credentials: 'include',
-                });
+            const res = await fetch(`${process.env.NEXT_PUBLIC_EMPRESA_API}/dono/${slug}`, {
+                credentials: 'include',
+            });
 
-                if (!res.ok) {
-                    if (res.status === 401 || res.status === 403) {
-                        router.push('/loginEmpresa');
-                        return;
-                    }
-                    const errorData = await res.json();
-                    throw new Error(`Erro ao carregar dados do dashboard: ${errorData.error || res.statusText}`);
+            if (!res.ok) {
+                if (res.status === 401 || res.status === 403) {
+                router.push('/loginEmpresa');
+                return;
                 }
+                const errorData = await res.json();
+                throw new Error(errorData.error || 'Erro ao carregar dados do dashboard');
+            }
 
-                const data = await res.json();
-                setDonoData(data);
-                setMetrics({
-                    novosPedidos: data?.novosPedidos ?? 0, 
-                    pedidosFinalizados: data?.pedidosFinalizados ?? 0,
-                    notificacoes: data?.notificacoes ?? 0,
-                });
+            const data = await res.json();
+            setDonoData(data);
+            setMetrics({
+                novosPedidos: data?.novosPedidos ?? 0,
+                pedidosFinalizados: data?.pedidosFinalizados ?? 0,
+                notificacoes: data?.notificacoes ?? 0,
+            });
             } catch (err) {
-                console.error("Erro na requisição fetchDonoArea:", err);
-                setError(err.message);
+            console.error("Erro na requisição fetchDonoArea:", err);
+            setError(err.message);
             } finally {
-                setLoading(false);
+            setLoading(false);
             }
         }
 
         fetchDonoArea();
-    }, [router]); 
+        }, [router.isReady]);
+
 
     if (loading) {
         return (
